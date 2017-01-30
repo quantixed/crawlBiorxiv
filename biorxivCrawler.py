@@ -42,15 +42,24 @@ def extractJournalFromPage(driver, link):
         out = "unpublished"
     return out
 
+def extractDoiFromPage(driver, link):
+    driver.get(link)
+    time.sleep(6)
+    LinkElement = driver.find_element_by_class_name("pub_jnl")
+    out = LinkElement.text
+#    out = [elem.get_attribute("href") for elem in LinkElement]
+    return out
+
 myDriver = webdriver.Firefox()
-myLinks = getAllLinks(myDriver) # comment if you have already a list of links
-#with open("todoLinks.txt", "rb") as infile: # uncomment if you have already a list of links
-#    myLinks = [line[:-1] for line in infile] # uncomment if you have already a list of links
-with open("linkPublishedIn.txt.txt", "a") as outfile:
+#myLinks = getAllLinks(myDriver) # comment if you have already a list of links
+with open("todoLinks.txt", "rb") as infile: # uncomment if you have already a list of links
+    myLinks = [line[:-1] for line in infile] # uncomment if you have already a list of links
+with open("linkPublishedIn.txt", "a") as outfile:
     journalCounter = {"unpublished":0}
     for curLink in myLinks:
         journal = extractJournalFromPage(myDriver, curLink)
-        print >> outfile, curLink + '\t' + journal
+        doi = extractDoiFromPage(myDriver, curLink)
+        print >> outfile, curLink + '\t' + journal + '\t' + doi
         if journal:
             try:
                 journalCounter[journal] += 1
@@ -62,5 +71,3 @@ myDriver.close()
 
 for journal, counter in journalCounter.items():
     print '\t'.join([journal, str(counter)])
-
-
