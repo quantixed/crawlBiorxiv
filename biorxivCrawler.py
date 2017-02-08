@@ -47,7 +47,8 @@ def extractDoiFromPage(driver, link):
     time.sleep(6)
     LinkElement = driver.find_element_by_class_name("pub_jnl")
     out = LinkElement.text
-#    out = [elem.get_attribute("href") for elem in LinkElement]
+    fields = out.split(' ')
+    out = fields[fields.index("doi:")+1]
     return out
 
 myDriver = webdriver.Firefox()
