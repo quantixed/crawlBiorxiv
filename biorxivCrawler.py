@@ -45,10 +45,16 @@ def extractJournalFromPage(driver, link):
 def extractDoiFromPage(driver, link):
     driver.get(link)
     time.sleep(6)
-    LinkElement = driver.find_element_by_class_name("pub_jnl")
-    out = LinkElement.text
+    try:
+        LinkElement = driver.find_element_by_class_name("pub_jnl")
+        out = LinkElement.text
+    except NoSuchElementException:
+        out = "unpublished"
     fields = out.split(' ')
-    out = fields[fields.index("doi:")+1]
+    try:
+        out = fields[fields.index("doi:")+1]
+    except ValueError:
+        out = "unpublished"
     return out
 
 myDriver = webdriver.Firefox()
